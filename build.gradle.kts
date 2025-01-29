@@ -1,11 +1,15 @@
+import java.util.Properties
+
 plugins {
     id("java")
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
     id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("com.modrinth.minotaur") version "2.+"
+    id("co.uzzu.dotenv.gradle") version "4.0.0"
 }
 
 group = "org.atrimilan"
-version = "1.0-SNAPSHOT"
+version = env.PROJECT_VERSION.value
 
 repositories {
     mavenCentral()
@@ -16,11 +20,22 @@ repositories {
     }
 }
 
+// Doc: https://github.com/modrinth/minotaur
+modrinth {
+    token.set(env.MODRINTH_TOKEN.value)
+    projectId.set(env.MODRINTH_PROJECT_ID.value)
+    versionNumber.set(env.PROJECT_VERSION.value)
+    versionType.set("release")
+    uploadFile.set(tasks.jar)
+    loaders.addAll("paper")
+    syncBodyFrom = rootProject.file("README.md").readText()
+}
+
 // Uncomment if the project should support Spigot on Minecraft >=1.20.5
-//paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
+// paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
 
 dependencies {
-//    compileOnly("io.papermc.paper:paper-api:${project.property("paperApiVersion")}") // Included with paperweight-userdev
+    // compileOnly("io.papermc.paper:paper-api:${project.property("paperApiVersion")}") // Included with paperweight-userdev
     paperweight.paperDevBundle(project.property("paperApiVersion") as String)
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -29,11 +44,63 @@ dependencies {
 val serverDir = "local-server"
 
 tasks {
-    register("buildAndRunServer") {
-        group = "build and run"
+
+    /********** Versioning **********/
+
+    fun updateProjectVersion(major: Int, minor: Int, patch: Int) {
+        val envFile = File(rootDir, ".env")
+        val properties = Properties()
+        properties.load(envFile.inputStream())
+        properties.setProperty("PROJECT_VERSION", "$major.$minor.$patch")
+        envFile.outputStream().use {
+            properties.store(it, null)
+        }
+    }
+
+    fun incrementVersion(majorIncrement: Int = 0, minorIncrement: Int = 0, patchIncrement: Int = 0) {
+        val (major, minor, patch) = env.PROJECT_VERSION.value.split(".").map { it.toInt() }
+        val newMajor = major + majorIncrement
+        val newMinor = if (majorIncrement > 0) 0 else minor + minorIncrement // Reset if major, otherwise increment
+        val newPatch = if (majorIncrement > 0 || minorIncrement > 0) 0 else patch + patchIncrement // Reset if major or minor, otherwise increment
+        updateProjectVersion(newMajor, newMinor, newPatch)
+    }
+
+    register("incrementMajorVersion") { // X.0.0
+        group = "2- versioning"
+        doLast {
+            incrementVersion(majorIncrement = 1)
+        }
+    }
+    register("incrementMinorVersion") { // 0.X.0
+        group = "2- versioning"
+        doLast {
+            incrementVersion(minorIncrement = 1)
+        }
+    }
+    register("incrementPatchVersion") { // 0.0.X
+        group = "2- versioning"
+        doLast {
+            incrementVersion(patchIncrement = 1)
+        }
+    }
+
+    /********** Deployment **********/
+
+    named("modrinth") {
+        group = "3- deployment"
+        dependsOn("modrinthSyncBody")
+    }
+    named("modrinthSyncBody") {
+        group = null
+    }
+
+    /********** Build plugin and run a local server **********/
+
+    register("buildPluginAndRunServer") {
+        group = "1- server"
         description = "Build the plugin's JAR file and run a Paper test server that includes it"
 
-        dependsOn("build") // Build plugin JAR
+        dependsOn("jar") // Build plugin JAR
 
         doFirst { // Copy plugin JAR
             val jarFile = file("build/libs/${project.name}-${version}.jar")
@@ -45,7 +112,6 @@ tasks {
             else
                 throw GradleException("File ${jarFile.name} not found.")
         }
-
         finalizedBy("runDevBundleServer") // Run a local Paper server
     }
 
@@ -55,14 +121,14 @@ tasks {
      * "runDevBundleServer" when using Mojang mappings (paperweight-userdev)
      */
     runDevBundleServer {
+        group = "1- server"
         runDirectory.set(file(serverDir))
+        // minecraftVersion("1.21.4") // Automatically set by paperweight-userdev
 
-        // minecraftVersion("1.21.4") // Automatically managed by paperweight-userdev
         jvmArgs(
             "-Dcom.mojang.eula.agree=true",
             "-Dserver.port=25565"
         )
-
         doFirst {
             // Configure server.properties
             val serverPropertiesFile = file("${serverDir}/server.properties")
@@ -81,7 +147,8 @@ tasks {
         }
     }
 
-    runServer { // Should not be used as paperweight-userdev has been implemented
+    named("runServer") { // Should not be used as paperweight-userdev has been implemented
+        group = null
         throw GradleException("Please use the 'runDevBundleServer' task instead.")
     }
 
