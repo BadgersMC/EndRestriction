@@ -1,5 +1,13 @@
 # Paper Plugin Template
 
+<!-- modrinth_exclude.start -->
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Atrimilan/PaperPluginTemplate/release.yml?branch=master&event=workflow_dispatch&style=flat-square)](https://github.com/Atrimilan/PaperPluginTemplate/actions/workflows/release.yml)
+[![GitHub Tag](https://img.shields.io/github/v/tag/Atrimilan/PaperPluginTemplate?style=flat-square)](https://github.com/Atrimilan/PaperPluginTemplate/releases)
+[![GitHub License](https://img.shields.io/github/license/Atrimilan/PaperPluginTemplate?style=flat-square)](https://github.com/Atrimilan/PaperPluginTemplate/blob/master/LICENSE)
+
+
+<!-- modrinth_exclude.end -->
+
 Example project to get started with Paper plugin development.
 
 <!-- modrinth_exclude.start -->

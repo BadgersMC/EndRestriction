@@ -15,6 +15,12 @@ jobs:
           distribution: 'corretto'
           java-version: '21'
 
+      - name: Extract project version
+        run: |
+          projectVersion=$(grep '^projectVersion=' gradle.properties | cut -d '=' -f2)
+          echo "projectVersion=${projectVersion}" >> $GITHUB_ENV
+          echo "✅ Project version found: ${projectVersion}"
+
       - name: Build plugin with Gradle
         run: ./gradlew build
 
@@ -26,9 +32,10 @@ jobs:
         with:
           curseforge-id: ${{ vars.CURSEFORGE_PROJECT_ID }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-tag: ${{ env.projectVersion }}
+
           files: build/libs/*.jar
           loaders: paper
-
-      - name: End message
-        run: echo 'Plugin has been successfully published ✅'
+          changelog-file: changelogs/${{ env.projectVersion }}.md
