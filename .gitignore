@@ -1,6 +1,5 @@
 ### Project ###
 local-server/
-*.env
 
 ### Gradle ###
 .gradle

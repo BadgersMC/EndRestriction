@@ -3,7 +3,6 @@ plugins {
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("com.modrinth.minotaur") version "2.+"
-    id("co.uzzu.dotenv.gradle") version "4.0.0"
 }
 
 fun getProperty(key: String): String {
@@ -16,6 +15,7 @@ version = getProperty("projectVersion")
 val localServerDir = "local-server"
 val projectVersion = getProperty("projectVersion")
 val supportedGameVersions = getProperty("supportedGameVersions")
+val modrinthProjectId = getProperty("modrinthProjectId")
 val readmeFile = rootProject.file("README.md")
 val changelogFile = rootProject.file("changelogs/${projectVersion}.md")
 
@@ -30,8 +30,8 @@ repositories {
 
 // Doc: https://github.com/modrinth/minotaur
 modrinth {
-    token.set(env.MODRINTH_TOKEN.value)
-    projectId.set(env.MODRINTH_PROJECT_ID.value)
+    token.set(System.getenv("MODRINTH_TOKEN"))
+    projectId.set(modrinthProjectId)
     uploadFile.set(tasks.jar)
 
     versionNumber.set(projectVersion)

@@ -18,10 +18,18 @@ This project includes a `build.gradle.kts` configuration with several tasks:
 * Plugin deployment:
   * `modrinth` - Deploy the plugin to [Modrinth](https://modrinth.com)
 
-You must define an `.env` file at the root of the project as follows:
-```dotenv
-MODRINTH_TOKEN=<your-modrinth-token>
-MODRINTH_PROJECT_ID=<your-modrinth-project-id>
-```
+---
+
+You must configure your environment variables first:
+
+* Windows
+  ```bat
+  setx MODRINTH_TOKEN "your-modrinth-token"
+  ```
+
+* Bash
+  ```bash
+  export MODRINTH_TOKEN="your-modrinth-token"
+  ```
 
 <!-- modrinth_exclude.end -->
