@@ -11,6 +11,9 @@ plugins {
 group = "org.atrimilan"
 version = env.PROJECT_VERSION.value
 
+val supportedGameVersions = project.property("supportedGameVersions") as String
+val changelogFile = rootProject.file("changelogs/${env.PROJECT_VERSION.value}.md")
+
 repositories {
     mavenCentral()
     gradlePluginPortal()
@@ -25,10 +28,16 @@ modrinth {
     token.set(env.MODRINTH_TOKEN.value)
     projectId.set(env.MODRINTH_PROJECT_ID.value)
     versionNumber.set(env.PROJECT_VERSION.value)
-    versionType.set("release")
     uploadFile.set(tasks.jar)
+
+    versionType.set("release")
+    gameVersions.addAll(supportedGameVersions.split(","))
     loaders.addAll("paper")
     syncBodyFrom = rootProject.file("README.md").readText()
+
+    if (changelogFile.exists()) {
+        changelog.set(changelogFile.readText())
+    }
 }
 
 // Uncomment if the project should support Spigot on Minecraft >=1.20.5
@@ -84,20 +93,17 @@ tasks {
         }
     }
 
-    /********** Deployment **********/
+    /********** Publishing **********/
 
     named("modrinth") {
-        group = "3- deployment"
+        group = "3- publishing"
         dependsOn("modrinthSyncBody")
-    }
-    named("modrinthSyncBody") {
-        group = null
     }
 
     /********** Build plugin and run a local server **********/
 
     register("buildPluginAndRunServer") {
-        group = "1- server"
+        group = "1- local server"
         description = "Build the plugin's JAR file and run a Paper test server that includes it"
 
         dependsOn("jar") // Build plugin JAR
@@ -121,7 +127,7 @@ tasks {
      * "runDevBundleServer" when using Mojang mappings (paperweight-userdev)
      */
     runDevBundleServer {
-        group = "1- server"
+        group = "1- local server"
         runDirectory.set(file(serverDir))
         // minecraftVersion("1.21.4") // Automatically set by paperweight-userdev
 
@@ -148,7 +154,6 @@ tasks {
     }
 
     named("runServer") { // Should not be used as paperweight-userdev has been implemented
-        group = null
         throw GradleException("Please use the 'runDevBundleServer' task instead.")
     }
 
