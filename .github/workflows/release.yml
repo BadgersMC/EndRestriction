@@ -28,6 +28,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files: build/libs/*.jar
+          loaders: paper
 
       - name: End message
         run: echo 'Plugin has been successfully published ✅'
