@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     id("java")
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
@@ -8,11 +6,18 @@ plugins {
     id("co.uzzu.dotenv.gradle") version "4.0.0"
 }
 
-group = "org.atrimilan"
-version = env.PROJECT_VERSION.value
+fun getProperty(key: String): String {
+    return project.property(key) as String
+}
 
-val supportedGameVersions = project.property("supportedGameVersions") as String
-val changelogFile = rootProject.file("changelogs/${env.PROJECT_VERSION.value}.md")
+group = "org.atrimilan"
+version = getProperty("projectVersion")
+
+val localServerDir = "local-server"
+val projectVersion = getProperty("projectVersion")
+val supportedGameVersions = getProperty("supportedGameVersions")
+val readmeFile = rootProject.file("README.md")
+val changelogFile = rootProject.file("changelogs/${projectVersion}.md")
 
 repositories {
     mavenCentral()
@@ -27,14 +32,14 @@ repositories {
 modrinth {
     token.set(env.MODRINTH_TOKEN.value)
     projectId.set(env.MODRINTH_PROJECT_ID.value)
-    versionNumber.set(env.PROJECT_VERSION.value)
     uploadFile.set(tasks.jar)
 
+    versionNumber.set(projectVersion)
     versionType.set("release")
     gameVersions.addAll(supportedGameVersions.split(","))
     loaders.addAll("paper")
-    syncBodyFrom = rootProject.file("README.md").readText()
 
+    syncBodyFrom = readmeFile.readText()
     if (changelogFile.exists()) {
         changelog.set(changelogFile.readText())
     }
@@ -44,52 +49,47 @@ modrinth {
 // paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
 
 dependencies {
-    // compileOnly("io.papermc.paper:paper-api:${project.property("paperApiVersion")}") // Included with paperweight-userdev
-    paperweight.paperDevBundle(project.property("paperApiVersion") as String)
+    // compileOnly("io.papermc.paper:paper-api:${getProperty("paperApiVersion")}") // Included with paperweight-userdev
+    paperweight.paperDevBundle(getProperty("paperApiVersion"))
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
-
-val serverDir = "local-server"
 
 tasks {
 
     /********** Versioning **********/
 
-    fun updateProjectVersion(major: Int, minor: Int, patch: Int) {
-        val envFile = File(rootDir, ".env")
-        val properties = Properties()
-        properties.load(envFile.inputStream())
-        properties.setProperty("PROJECT_VERSION", "$major.$minor.$patch")
-        envFile.outputStream().use {
-            properties.store(it, null)
+    fun incrementVersion(type: String) {
+        val (major, minor, patch) = projectVersion.split(".").map { it.toInt() }
+        val newVersion = when (type) {
+            "major" -> "${major + 1}.0.0"
+            "minor" -> "$major.${minor + 1}.0"
+            "patch" -> "$major.$minor.${patch + 1}"
+            else -> throw GradleException("Invalid version type")
+        }
+        file("gradle.properties").apply {
+            writeText(readText().replace(Regex("projectVersion=.*"), "projectVersion=$newVersion"))
         }
     }
 
-    fun incrementVersion(majorIncrement: Int = 0, minorIncrement: Int = 0, patchIncrement: Int = 0) {
-        val (major, minor, patch) = env.PROJECT_VERSION.value.split(".").map { it.toInt() }
-        val newMajor = major + majorIncrement
-        val newMinor = if (majorIncrement > 0) 0 else minor + minorIncrement // Reset if major, otherwise increment
-        val newPatch = if (majorIncrement > 0 || minorIncrement > 0) 0 else patch + patchIncrement // Reset if major or minor, otherwise increment
-        updateProjectVersion(newMajor, newMinor, newPatch)
+    register("incrementMajorVersion") {
+        group = "2- versioning"
+        doLast {
+            incrementVersion("major")
+        }
     }
 
-    register("incrementMajorVersion") { // X.0.0
+    register("incrementMinorVersion") {
         group = "2- versioning"
         doLast {
-            incrementVersion(majorIncrement = 1)
+            incrementVersion("minor")
         }
     }
-    register("incrementMinorVersion") { // 0.X.0
+
+    register("incrementPatchVersion") {
         group = "2- versioning"
         doLast {
-            incrementVersion(minorIncrement = 1)
-        }
-    }
-    register("incrementPatchVersion") { // 0.0.X
-        group = "2- versioning"
-        doLast {
-            incrementVersion(patchIncrement = 1)
+            incrementVersion("patch")
         }
     }
 
@@ -110,8 +110,7 @@ tasks {
 
         doFirst { // Copy plugin JAR
             val jarFile = file("build/libs/${project.name}-${version}.jar")
-            val pluginsDir = file("${serverDir}/plugins")
-            pluginsDir.mkdirs()
+            val pluginsDir = file("${localServerDir}/plugins").apply { mkdirs() }
 
             if (jarFile.exists())
                 jarFile.copyTo(file("${pluginsDir}/${jarFile.name}"), overwrite = true)
@@ -128,24 +127,26 @@ tasks {
      */
     runDevBundleServer {
         group = "1- local server"
-        runDirectory.set(file(serverDir))
+        runDirectory.set(file(localServerDir))
         // minecraftVersion("1.21.4") // Automatically set by paperweight-userdev
 
         jvmArgs(
             "-Dcom.mojang.eula.agree=true",
             "-Dserver.port=25565"
         )
+
         doFirst {
-            // Configure server.properties
-            val serverPropertiesFile = file("${serverDir}/server.properties")
-            serverPropertiesFile.parentFile.mkdirs()
+            val serverPropertiesFile = file("${localServerDir}/server.properties")
+            val bukkitYmlFile = file("${localServerDir}/bukkit.yml")
+
+            listOf(serverPropertiesFile, bukkitYmlFile).forEach {
+                file -> file.parentFile.mkdirs()
+            }
+
             serverPropertiesFile.writeText("""
                 allow-nether=false
                 """.trimIndent())
 
-            // Configure bukkit.yml
-            val bukkitYmlFile = file("${serverDir}/bukkit.yml")
-            bukkitYmlFile.parentFile.mkdirs()
             bukkitYmlFile.writeText("""
                 settings:
                   allow-end: false

@@ -1,4 +1,4 @@
-# Paper Plugin Test
+# Paper Plugin Template
 
 Example project to get started with Paper plugin development.
 
@@ -20,7 +20,6 @@ This project includes a `build.gradle.kts` configuration with several tasks:
 
 You must define an `.env` file at the root of the project as follows:
 ```dotenv
-PROJECT_VERSION=1.0.0
 MODRINTH_TOKEN=<your-modrinth-token>
 MODRINTH_PROJECT_ID=<your-modrinth-project-id>
 ```

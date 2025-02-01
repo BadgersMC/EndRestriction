@@ -1,4 +1,4 @@
-package org.atrimilan.paperplugintest;
+package org.atrimilan.paperplugintemplate;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class PaperPluginTest extends JavaPlugin implements Listener {
+public class PaperPluginTemplate extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
