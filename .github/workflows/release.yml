@@ -50,7 +50,6 @@ jobs:
           files: build/libs/*.jar
           loaders: paper
           game-versions: ${{ env.supportedGameVersions }}
-          game-version-filter: any
           version: ${{ env.projectVersion }}
           version-type: ${{ env.versionType }}
           changelog-file: changelogs/${{ env.projectVersion }}.md
