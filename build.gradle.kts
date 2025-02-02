@@ -2,7 +2,6 @@ plugins {
     id("java")
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
     id("xyz.jpenilla.run-paper") version "2.3.1"
-    id("com.modrinth.minotaur") version "2.+"
 }
 
 fun getProperty(key: String): String {
@@ -14,10 +13,6 @@ version = getProperty("projectVersion")
 
 val localServerDir = "local-server"
 val projectVersion = getProperty("projectVersion")
-val supportedGameVersions = getProperty("supportedGameVersions")
-val modrinthProjectId = getProperty("modrinthProjectId")
-val readmeFile = rootProject.file("README.md")
-val changelogFile = rootProject.file("changelogs/${projectVersion}.md")
 
 repositories {
     mavenCentral()
@@ -25,23 +20,6 @@ repositories {
     maven {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
-    }
-}
-
-// Doc: https://github.com/modrinth/minotaur
-modrinth {
-    token.set(System.getenv("MODRINTH_TOKEN"))
-    projectId.set(modrinthProjectId)
-    uploadFile.set(tasks.jar)
-
-    versionNumber.set(projectVersion)
-    versionType.set("release")
-    gameVersions.addAll(supportedGameVersions.split(","))
-    loaders.addAll("paper")
-
-    syncBodyFrom = readmeFile.readText()
-    if (changelogFile.exists()) {
-        changelog.set(changelogFile.readText())
     }
 }
 
@@ -91,13 +69,6 @@ tasks {
         doLast {
             incrementVersion("patch")
         }
-    }
-
-    /********** Publishing **********/
-
-    named("modrinth") {
-        group = "3- publishing"
-        dependsOn("modrinthSyncBody")
     }
 
     /********** Build plugin and run a local server **********/

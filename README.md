@@ -4,8 +4,6 @@
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Atrimilan/PaperPluginTemplate/release.yml?branch=master&event=workflow_dispatch&style=flat-square)](https://github.com/Atrimilan/PaperPluginTemplate/actions/workflows/release.yml)
 [![GitHub Tag](https://img.shields.io/github/v/tag/Atrimilan/PaperPluginTemplate?style=flat-square)](https://github.com/Atrimilan/PaperPluginTemplate/releases)
 [![GitHub License](https://img.shields.io/github/license/Atrimilan/PaperPluginTemplate?style=flat-square)](https://github.com/Atrimilan/PaperPluginTemplate/blob/master/LICENSE)
-
-
 <!-- modrinth_exclude.end -->
 
 Example project to get started with Paper plugin development.
@@ -23,21 +21,5 @@ This project includes a `build.gradle.kts` configuration with several tasks:
   * `incrementMajorVersion` - Update the first digit of the project version
   * `incrementMinorVersion` - Update the second digit of the project version
   * `incrementPatchVersion` - Update the last digit of the project version
-* Plugin deployment:
-  * `modrinth` - Deploy the plugin to [Modrinth](https://modrinth.com)
-
----
-
-You must configure your environment variables first:
-
-* Windows
-  ```bat
-  setx MODRINTH_TOKEN "your-modrinth-token"
-  ```
-
-* Bash
-  ```bash
-  export MODRINTH_TOKEN="your-modrinth-token"
-  ```
 
 <!-- modrinth_exclude.end -->
