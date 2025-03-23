@@ -8,13 +8,16 @@
 
 Example project to get started with Paper plugin development and publication.
 
+Available commands :
+* `/flyspeed` - Change the flight speed of a player (value between 0.0 and 10.0)
+
 <!-- modrinth_exclude.start -->
 ## 1. Gradle tasks
 
 This project includes a `build.gradle.kts` configuration with useful tasks :
 
 * Running a local Paper Minecraft server :
-  * `runDevBundleServer` - Run a local Paper Minecraft server (source : https://github.com/jpenilla/run-task)
+  * `runDevBundleServer` - Run a local Paper Minecraft server (using : https://github.com/jpenilla/run-task)
   * `buildPluginAndRunServer` - Run a local Paper Minecraft server with a new build of the plugin
 
 * Plugin versioning :

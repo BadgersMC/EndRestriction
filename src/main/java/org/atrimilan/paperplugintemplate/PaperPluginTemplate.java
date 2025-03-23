@@ -1,21 +1,26 @@
 package org.atrimilan.paperplugintemplate;
 
-import net.kyori.adventure.text.Component;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import org.atrimilan.paperplugintemplate.commands.FlySpeedCommand;
+import org.atrimilan.paperplugintemplate.eventlisteners.PlayerActionsListener;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class PaperPluginTemplate extends JavaPlugin implements Listener {
+public class PaperPluginTemplate extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Bukkit.getPluginManager().registerEvents(this, this);
+        this.registerPluginCommands();
+        this.registerPluginEvents();
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        event.getPlayer().sendMessage(Component.text("Welcome back, " + event.getPlayer().getName() + "!"));
+    private void registerPluginCommands() {
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+            commands.registrar().register(FlySpeedCommand.createCommand(), FlySpeedCommand.ALIASES);
+        });
+    }
+
+    private void registerPluginEvents() {
+        Bukkit.getPluginManager().registerEvents(new PlayerActionsListener(), this);
     }
 }
