@@ -8,8 +8,9 @@
 
 Example project to get started with Paper plugin development and publication.
 
-Available commands :
-* `/flyspeed` - Change the flight speed of a player (value between 0.0 and 10.0)
+Available features :
+* Automatically send a welcome message to players joining the server.
+* `/flyspeed [<player>] <speed>` - Change the flight speed of a player (value between 0.0 and 10.0), if no player is specified, the player executing the command will be used.
 
 <!-- modrinth_exclude.start -->
 ## 1. Gradle tasks
