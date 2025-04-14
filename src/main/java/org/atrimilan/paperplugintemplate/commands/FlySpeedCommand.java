@@ -15,13 +15,17 @@ import org.bukkit.entity.Player;
 
 import java.util.Set;
 
+/**
+ * Example command to change the fly speed of a player
+ */
 public class FlySpeedCommand {
 
     public static final Set<String> ALIASES = Set.of("fspeed", "fs");
 
-    private static final float MIN_SPEED = 0;
+    private FlySpeedCommand() {
+    }
 
-    private static final float MAX_SPEED = 10.0f;
+    private static final FloatArgumentType flySpeedLimits = FloatArgumentType.floatArg(0f, 10f);
 
     /**
      * @return A {@code LiteralCommandNode} of the {@code /flyspeed} command, ready to be registered with a
@@ -30,13 +34,13 @@ public class FlySpeedCommand {
     public static LiteralCommandNode<CommandSourceStack> createCommand() {
         return Commands.literal("flyspeed")
                 // flyspeed <speed>
-                .then(Commands.argument("speed", FloatArgumentType.floatArg(MIN_SPEED, MAX_SPEED))
+                .then(Commands.argument("speed", flySpeedLimits) //
                         .executes(FlySpeedCommand::runFlySpeed))
 
                 // flyspeed <player> <speed>
                 .then(Commands.argument("player", ArgumentTypes.player())
                         .requires(sender -> sender.getSender().isOp()) // Require OP for this command
-                        .then(Commands.argument("speed", FloatArgumentType.floatArg(MIN_SPEED, MAX_SPEED))
+                        .then(Commands.argument("speed", flySpeedLimits) //
                                 .executes(ctx -> {
                                     final PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("player",
                                             PlayerSelectorArgumentResolver.class);
