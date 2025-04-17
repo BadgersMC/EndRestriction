@@ -20,6 +20,8 @@ import java.util.Set;
  */
 public class FlySpeedCommand {
 
+    public static final String DESCRIPTION = "Sets the fly speed of a player";
+
     public static final Set<String> ALIASES = Set.of("fspeed", "fs");
 
     private FlySpeedCommand() {
@@ -35,11 +37,12 @@ public class FlySpeedCommand {
         return Commands.literal("flyspeed")
                 // flyspeed <speed>
                 .then(Commands.argument("speed", flySpeedLimits) //
+                        .requires(sender -> sender.getSender().hasPermission("testplugin.flyspeed"))
                         .executes(FlySpeedCommand::runFlySpeed))
 
                 // flyspeed <player> <speed>
                 .then(Commands.argument("player", ArgumentTypes.player())
-                        .requires(sender -> sender.getSender().isOp()) // Require OP for this command
+                        .requires(sender -> sender.getSender().hasPermission("testplugin.flyspeed.others"))
                         .then(Commands.argument("speed", flySpeedLimits) //
                                 .executes(ctx -> {
                                     final PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("player",

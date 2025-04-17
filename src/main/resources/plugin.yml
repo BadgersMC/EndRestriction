@@ -5,3 +5,16 @@ description: Example project to get started with Paper plugin development and pu
 author: Atrimilan
 website: https://github.com/Atrimilan/PaperPluginTemplate
 api-version: '1.21.4'
+
+permissions :
+  testplugin.readconfig:
+    description: Read config.yml values - /read-config <ultimate-answer|pangram|boolean|player>
+    default: true
+  testplugin.flyspeed:
+    description: Sets the fly speed of the player executing the command - /flyspeed <speed>
+    default: true
+  testplugin.flyspeed.others:
+    description: Sets the fly speed of other players - /flyspeed <player> <speed>
+    default: op
+
+# No need to add "commands", as it would conflict with the new PaperMC command registration system.

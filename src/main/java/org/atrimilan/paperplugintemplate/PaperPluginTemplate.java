@@ -24,8 +24,10 @@ public class PaperPluginTemplate extends JavaPlugin {
 
     private void registerPluginCommands() {
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-            commands.registrar().register(FlySpeedCommand.createCommand(), FlySpeedCommand.ALIASES);
-            commands.registrar().register(ReadConfigCommand.createCommand(), ReadConfigCommand.ALIASES);
+            commands.registrar().register( //
+                    FlySpeedCommand.createCommand(), FlySpeedCommand.DESCRIPTION, FlySpeedCommand.ALIASES);
+            commands.registrar().register( //
+                    ReadConfigCommand.createCommand(), ReadConfigCommand.DESCRIPTION, ReadConfigCommand.ALIASES);
         });
     }
 

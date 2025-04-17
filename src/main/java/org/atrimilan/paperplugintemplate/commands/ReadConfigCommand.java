@@ -18,6 +18,8 @@ import java.util.Set;
  */
 public class ReadConfigCommand {
 
+    public static final String DESCRIPTION = "Reads config.yml";
+
     public static final Set<String> ALIASES = Set.of("rc");
 
     private static final String CONFIG_PATH = "example.";
@@ -31,6 +33,7 @@ public class ReadConfigCommand {
      */
     public static LiteralCommandNode<CommandSourceStack> createCommand() {
         return Commands.literal("read-config") //
+                .requires(sender -> sender.getSender().hasPermission("testplugin.readconfig"))
                 .then(Commands.literal("ultimate-answer").executes(ReadConfigCommand::readUltimateAnswer))
                 .then(Commands.literal("pangram").executes(ReadConfigCommand::readSentence))
                 .then(Commands.literal("boolean").executes(ReadConfigCommand::readBoolean))
