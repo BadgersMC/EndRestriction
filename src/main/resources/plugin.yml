@@ -1,10 +1,10 @@
-name: PaperPluginTemplate
-version: 1.0.0
-main: org.atrimilan.paperplugintemplate.PaperPluginTemplate
-description: Example project to get started with Paper plugin development and publication.
-author: Atrimilan
-website: https://github.com/Atrimilan/PaperPluginTemplate
-api-version: '1.21.4'
+name: EndRestriction
+version: '${version}'
+main: net.lumalyte.endrestrict.EndRestrictionPlugin
+api-version: '1.20'
+description: Restricts access to The End until a configured time
+author: lumalyte
+softdepend: [PlaceholderAPI]
 
 permissions :
   testplugin.readconfig:

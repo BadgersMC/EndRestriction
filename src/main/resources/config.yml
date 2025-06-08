@@ -1,10 +1,11 @@
-example:
-  ultimate-answer: 42
-  pangram: "The quick brown fox jumps over the lazy dog"
-  boolean: true
-  player:
-    uuid: "00000000-0000-0000-0000-000000000000"
-    location:
-      x: 1.0
-      y: 2.0
-      z: 3.0
+# Time when the end will be unlocked
+# Format: yyyy-MM-dd HH:mm:ss
+unlock_time: "2025-07-01 15:00:00"
+
+# Timezone for the unlock time (use timezone IDs like 'America/New_York', 'Europe/London', etc.)
+# For a list of valid timezones, see: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+timezone: "UTC"
+
+# Messages
+messages:
+  end_locked: "<red>The End is currently locked! It will unlock on %unlock_time%</red>"
