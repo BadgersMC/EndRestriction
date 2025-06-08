@@ -1,42 +1,66 @@
-# Paper Plugin Template
+# EndRestriction
 
-<!-- modrinth_exclude.start -->
-[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Atrimilan/PaperPluginTemplate/release.yml?branch=master&event=workflow_dispatch&style=flat-square)](https://github.com/Atrimilan/PaperPluginTemplate/actions/workflows/release.yml)
-[![GitHub Tag](https://img.shields.io/github/v/tag/Atrimilan/PaperPluginTemplate?style=flat-square)](https://github.com/Atrimilan/PaperPluginTemplate/releases)
-[![GitHub License](https://img.shields.io/github/license/Atrimilan/PaperPluginTemplate?style=flat-square)](https://github.com/Atrimilan/PaperPluginTemplate/blob/master/LICENSE)
-<!-- modrinth_exclude.end -->
+A Minecraft Paper plugin that adds time-based restrictions to End dimension access. This plugin prevents players from locating strongholds and activating End portals until a specified time has passed.
 
-Example project to get started with Paper plugin development and publication.
+[![GitHub License](https://img.shields.io/github/license/BadgersMC/EndRestriction?style=flat-square)](https://github.com/BadgersMC/EndRestriction/blob/main/LICENSE)
 
-Available features :
-* Automatically send a welcome message to players joining the server.
-* `/flyspeed [<player>] <speed>` - Change the flight speed of a player (value between 0.0 and 10.0), if no player is specified, the player executing the command will be used.
-* `/read-config <ultimate-answer|pangram|boolean|player>` - Read the selected value from [config.yml](./src/main/resources/config.yml).
+## Features
 
-<!-- modrinth_exclude.start -->
-## 1. Gradle tasks
+- 🕒 Time-based End dimension access restriction
+- 🚫 Prevents players from locating strongholds before the unlock time
+- 🔒 Blocks End portal activation until the specified time
+- 📊 PlaceholderAPI support for dynamic time display
+- ⚙️ Fully configurable unlock time and messages
 
-This project includes a `build.gradle.kts` configuration with useful tasks :
+## PlaceholderAPI Integration
 
-* Running a local Paper Minecraft server :
-  * `runDevBundleServer` - Run a local Paper Minecraft server (using : https://github.com/jpenilla/run-task)
-  * `buildPluginAndRunServer` - Run a local Paper Minecraft server with a new build of the plugin
+This plugin provides the following placeholders:
 
-* Plugin versioning :
-  * `incrementMajorVersion` - Update the first digit of the project version
-  * `incrementMinorVersion` - Update the second digit of the project version
-  * `incrementPatchVersion` - Update the last digit of the project version
+- `%endrestrict_time%` - Shows the configured unlock time
+- `%endrestrict_status%` - Displays whether the End is currently "Locked" or "Unlocked"
+- `%endrestrict_remaining%` - Shows the time remaining until unlock in a human-readable format
 
-## 2. GitHub Action workflow
+## Configuration
 
-This project also includes a [release.yml](./.github/workflows/release.yml) file for publishing new versions of your plugin on CurseForge, Modrinth and GitHub.
-Secrets and variables must be defined in the repository **Security** settings :
+The plugin is highly configurable through the `config.yml` file. You can customize:
 
-1. Secrets :
-    * `CURSEFORGE_TOKEN` - CurseForge [API token](https://curseforge.com/account/api-tokens)
-    * `MODRINTH_TOKEN` - Modrinth [Personal access token](https://modrinth.com/settings/pats) (with **Write projects** and **Create versions** permissions)
-2. Variables :
-    * `CURSEFORGE_PROJECT_ID` - CurseForge public project ID
-    * `MODRINTH_PROJECT_ID` - Modrinth public project ID
-> If your prefer to store all your variables in [gradle.properties](./gradle.properties) (**NOT YOUR SECRETS**), or store them in GitHub variables, do not forget to update  [release.yml](./.github/workflows/release.yml) in accordingly.
-<!-- modrinth_exclude.end -->
+- Unlock date and time
+- Messages and notifications
+- Permission settings
+- Portal activation restrictions
+
+## Installation
+
+1. Download the latest release from the [Releases](https://github.com/BadgersMC/EndRestriction/releases) page
+2. Place the JAR file in your server's `plugins` folder
+3. Restart your server
+4. Configure the plugin in `plugins/EndRestriction/config.yml`
+
+## Dependencies
+
+- Paper 1.20.x or newer
+- PlaceholderAPI (optional, for placeholders support)
+
+## Building from Source
+
+```bash
+./gradlew build
+```
+
+The built jar will be in `build/libs/`.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+If you encounter any issues or have questions:
+
+1. Check the [Issues](https://github.com/BadgersMC/EndRestriction/issues) page
+2. Create a new issue if your problem hasn't been reported
+3. Provide as much detail as possible, including:
+   - Server version
+   - Plugin version
+   - Error messages
+   - Steps to reproduce
