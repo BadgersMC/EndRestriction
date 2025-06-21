@@ -2,6 +2,7 @@
 
 A Minecraft Paper plugin that adds time-based restrictions to End dimension access. This plugin prevents players from locating strongholds and activating End portals until a specified time has passed.
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/dcb799ff07534090ae8c48021ece6b35)](https://app.codacy.com/gh/BadgersMC/EndRestriction?utm_source=github.com&utm_medium=referral&utm_content=BadgersMC/EndRestriction&utm_campaign=Badge_Grade)
 [![GitHub License](https://img.shields.io/github/license/BadgersMC/EndRestriction?style=flat-square)](https://github.com/BadgersMC/EndRestriction/blob/main/LICENSE)
 
 ## Features
